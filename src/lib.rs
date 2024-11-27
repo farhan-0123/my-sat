@@ -1,14 +1,14 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod clause;
+mod lbool;
+mod solver;
+mod var;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub use solver::Solver;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use lbool::LBool;
+
+pub use clause::Clause;
+pub use clause::ClauseDB;
+
+pub use var::Var;
+pub use var::VarDB;
