@@ -10,12 +10,16 @@ impl Var {
     pub fn name(&self) -> usize {
         self.name
     }
+    
+    pub fn pos(&self) -> usize {
+        self.pos
+    }
 }
 
 #[derive(Debug)]
 pub struct VarDB {
     vars: Vec<Var>,
-    values: Vec<LBool>,
+    pub values: Vec<LBool>,
 }
 
 impl VarDB {
@@ -39,7 +43,7 @@ impl VarDB {
         assert!(self.values.len() == self.vars.len());
 
         let value = Var {
-            name: self.vars.len(),
+            name: self.vars.len() + 1,
             pos: self.vars.len(),
         };
 
@@ -59,7 +63,7 @@ impl VarDB {
         vars
     }
 
-    pub fn get_values(&mut self) -> &mut Vec<LBool> {
-        &mut self.values
+    pub fn get_var(&self, index: usize) -> Var {
+        self.vars[index]
     }
 }

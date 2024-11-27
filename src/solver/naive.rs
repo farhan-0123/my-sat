@@ -15,7 +15,7 @@ pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
     }
 
     while solver.vars.increment() {
-        if solver.clause.check_satisfiability(&solver.vars.get_values()) {
+        if solver.clause.check_satisfiability(&solver.vars.values) {
             solver.is_sat = True;
             return true;
         }
@@ -28,20 +28,19 @@ pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
 impl VarDB {
     fn increment(&mut self) -> bool {
         let mut flag_break = false;
-        let values = self.get_values();
 
-        for index in 0..values.len() {
-            match values[index] {
+        for index in 0..self.values.len() {
+            match self.values[index] {
                 // Set initial condition to all true
                 Undefined => {
-                    values[index] = True;
+                    self.values[index] = True;
                     flag_break = true;
                 }
 
                 // Increment in a binary fashion
-                False => values[index] = True,
+                False => self.values[index] = True,
                 True => {
-                    values[index] = False;
+                    self.values[index] = False;
                     flag_break = true;
                     break;
                 }
@@ -70,23 +69,21 @@ impl ClauseDB {
                         True => return false,
                         Undefined => unreachable!("Because of fn increment"),
                     },
-                    
+
                     Or(lits) => {
                         let mut flag_atleast_one_true = false;
-                        
+
                         for lit in lits {
                             match lit {
-                                Identity(index) => {
-                                    match vars[*index] {
-                                        True => {
-                                            flag_atleast_one_true = true;
-                                            break;
-                                        },
-                                        False => continue,
-                                        Undefined => unreachable!("Because of fn increment"),
+                                Identity(index) => match vars[*index] {
+                                    True => {
+                                        flag_atleast_one_true = true;
+                                        break;
                                     }
-                                }
-                    
+                                    False => continue,
+                                    Undefined => unreachable!("Because of fn increment"),
+                                },
+
                                 Not(index) => match vars[*index] {
                                     False => {
                                         flag_atleast_one_true = true;
@@ -103,7 +100,7 @@ impl ClauseDB {
                         if !flag_atleast_one_true {
                             return false;
                         }
-                    },
+                    }
 
                     And(_) => unreachable!("Not allowed in CNF"),
                 }

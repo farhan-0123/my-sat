@@ -6,6 +6,7 @@ mod output;
 mod solve;
 
 pub struct Solver {
+    is_locked: bool,
     is_sat: LBool,
     vars: VarDB,
     clause: ClauseDB,
@@ -14,6 +15,7 @@ pub struct Solver {
 impl Solver {
     pub fn new() -> Self {
         Self {
+            is_locked: false,
             is_sat: LBool::Undefined,
             vars: VarDB::new(),
             clause: ClauseDB::new(),
@@ -22,6 +24,7 @@ impl Solver {
 
     pub fn with_capacity(vars: usize, clause: usize) -> Self {
         Self {
+            is_locked: false,
             is_sat: LBool::Undefined,
             vars: VarDB::with_capacity(vars),
             clause: ClauseDB::with_capacity(clause),
