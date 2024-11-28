@@ -1,7 +1,14 @@
 use super::*;
 
 impl Solver {
-    pub fn sat_values(&mut self) -> Vec<i128> {
+    pub fn sat_values(&mut self) -> Option<Vec<i128>> {
+        if self.is_sat == Undefined {
+            return None;
+        }
+        if self.is_sat == False {
+            return None;
+        }
+
         let vec_len = self.vars.values.len();
         let mut out = Vec::with_capacity(vec_len);
 
@@ -14,6 +21,6 @@ impl Solver {
             }
         }
 
-        out
+        Some(out)
     }
 }

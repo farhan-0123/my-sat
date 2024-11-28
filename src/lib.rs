@@ -1,8 +1,8 @@
 mod clause;
+mod errors;
 mod lbool;
 mod solver;
 mod var;
-mod errors;
 
 pub use solver::Solver;
 
@@ -15,3 +15,5 @@ pub use var::Var;
 pub use var::VarDB;
 
 pub use errors::MySatError;
+
+pub use solver::lexer::test_lexer;

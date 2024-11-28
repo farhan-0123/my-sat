@@ -10,7 +10,7 @@ impl Var {
     pub fn name(&self) -> usize {
         self.name
     }
-    
+
     pub fn pos(&self) -> usize {
         self.pos
     }

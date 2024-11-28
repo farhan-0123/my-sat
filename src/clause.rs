@@ -1,11 +1,14 @@
+use crate::*;
+
 #[derive(Debug)]
 pub enum Clause {
-    Identity(usize),
-    Not(usize),
+    Identity(Var),
+    Not(Var),
     Or(Vec<Clause>),
     And(Vec<Clause>),
 }
 
+#[derive(Debug)]
 pub struct ClauseDB {
     clause: Clause,
 }
@@ -25,11 +28,11 @@ impl ClauseDB {
 }
 
 impl ClauseDB {
-    pub fn get_clause(&mut self) -> &Clause {
+    pub fn get_clauses(&self) -> &Clause {
         &self.clause
     }
 
-    pub fn add_cnf_clause(&mut self, clause: Clause) -> bool {
+    pub fn add_clause(&mut self, clause: Clause) -> bool {
         use Clause::*;
 
         if let And(vec) = &mut self.clause {

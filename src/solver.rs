@@ -1,6 +1,7 @@
 use crate::*;
 
 mod constructor;
+pub mod lexer;
 mod naive;
 mod output;
 mod solve;
