@@ -1,3 +1,6 @@
+use std::ops::Range;
+use std::slice::Iter;
+
 use crate::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -13,6 +16,12 @@ impl Var {
 
     pub fn pos(&self) -> usize {
         self.pos
+    }
+}
+
+impl PartialEq for Var {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
     }
 }
 
@@ -39,31 +48,36 @@ impl VarDB {
 }
 
 impl VarDB {
-    pub fn new_var(&mut self) -> Var {
-        assert!(self.values.len() == self.vars.len());
+    pub fn get_or_new_vars(&mut self, range: Range<usize>) -> Vec<Var> {
+        let mut out: Vec<Var> = Vec::with_capacity(range.len());
 
-        let value = Var {
-            name: self.vars.len() + 1,
-            pos: self.vars.len(),
-        };
-
-        self.vars.push(value);
-        self.values.push(LBool::Undefined);
-
-        value
-    }
-
-    pub fn new_vars(&mut self, count: usize) -> Vec<Var> {
-        let mut vars = Vec::with_capacity(count);
-
-        for _ in 0..count {
-            vars.push(self.new_var());
+        for name in range {
+            out.push(self.get_or_new_var(name));
         }
 
-        vars
+        out
     }
 
-    pub fn get_var(&self, index: usize) -> Var {
-        self.vars[index]
+    pub fn get_or_new_var(&mut self, name: usize) -> Var {
+        for var in self.iter_vars() {
+            if var.name() == name {
+                return *var;
+            }
+        }
+
+        let var = Var {
+            pos: self.vars.len(),
+            name,
+        };
+        self.vars.push(var);
+        self.values.push(LBool::Undefined);
+
+        var
+    }
+}
+
+impl VarDB {
+    pub fn iter_vars(&self) -> Iter<'_, Var> {
+        self.vars.iter()
     }
 }

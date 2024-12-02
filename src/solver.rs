@@ -6,6 +6,7 @@ mod naive;
 mod output;
 mod solve;
 
+#[derive(Debug)]
 pub struct Solver {
     is_locked: bool,
     is_sat: LBool,

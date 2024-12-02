@@ -1,20 +1,24 @@
+use std::ops::Range;
+
 use super::*;
 
 impl Solver {
-    pub fn new_var(&mut self) -> Result<Var, MySatError> {
+    pub fn get_or_new_var(&mut self, name: usize) -> Result<Var, MySatError> {
         if self.is_locked {
             return Err(MySatError::ChangeAfterLock);
         }
 
-        Ok(self.vars.new_var())
+        Ok(self.vars.get_or_new_var(name))
     }
 
-    pub fn new_vars(&mut self, count: usize) -> Result<Vec<Var>, MySatError> {
+    pub fn get_or_new_vars(&mut self, range: Range<usize>) -> Result<Vec<Var>, MySatError> {
         if self.is_locked {
             return Err(MySatError::ChangeAfterLock);
         }
-
-        Ok(self.vars.new_vars(count))
+        if range.start == 0 {
+            return Err(MySatError::CannotSetZeroAsVariableName);
+        }
+        Ok(self.vars.get_or_new_vars(range))
     }
 
     pub fn add_clause(&mut self, clause: Clause) -> Result<&mut Self, MySatError> {

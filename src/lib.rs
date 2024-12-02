@@ -15,5 +15,3 @@ pub use var::Var;
 pub use var::VarDB;
 
 pub use errors::MySatError;
-
-pub use solver::lexer::test_lexer;
