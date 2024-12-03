@@ -28,7 +28,7 @@ impl ClauseDB {
 }
 
 impl ClauseDB {
-    pub fn get_clauses(&self) -> &Clause {
+    pub fn get_clause(&self) -> &Clause {
         &self.clause
     }
 

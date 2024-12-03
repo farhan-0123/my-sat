@@ -61,7 +61,7 @@ fn increment(values: &mut Vec<LBool>) -> bool {
 fn check_satisfiability(clause: &ClauseDB, values: &Vec<LBool>) -> bool {
     use Clause::*;
 
-    if let And(subclause) = clause.get_clauses() {
+    if let And(subclause) = clause.get_clause() {
         for clause in subclause {
             match clause {
                 Identity(var) => match values[var.pos()] {
