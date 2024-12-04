@@ -4,17 +4,6 @@ use LBool::*;
 
 #[expect(unused)]
 pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
-    // Guards
-    if !solver.is_cnf() {
-        return false;
-    }
-    if solver.is_sat == False {
-        return false;
-    }
-    if solver.is_sat == True {
-        return true;
-    }
-
     // To remove clutter
     let values = &mut solver.vars.values;
     let clause = &solver.clause;
@@ -22,7 +11,7 @@ pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
     // Implementation
     while increment(values) {
         solver.search_count += 1;
-        
+
         if check_satisfiability(clause, values) {
             solver.is_sat = True;
             return true;
@@ -67,50 +56,40 @@ fn check_satisfiability(clause: &ClauseDB, values: &Vec<LBool>) -> bool {
     if let And(subclause) = clause.get_clause() {
         for clause in subclause {
             match clause {
-                Identity(var) => match values[var.pos()] {
-                    False => return false,
-                    True => continue,
-                    Undefined => unreachable!("Because of fn increment"),
-                },
+                Identity(var) if values[var.pos()] == True => continue,
+                Identity(var) if values[var.pos()] == False => return false,
 
-                Not(var) => match values[var.pos()] {
-                    False => continue,
-                    True => return false,
-                    Undefined => unreachable!("Because of fn increment"),
-                },
+                Not(var) if values[var.pos()] == False => continue,
+                Not(var) if values[var.pos()] == True => return false,
 
                 Or(lits) => {
-                    let mut flag_atleast_one_true = false;
+                    let mut atleast_one_true = false;
 
                     for lit in lits {
                         match lit {
-                            Identity(var) => match values[var.pos()] {
-                                True => {
-                                    flag_atleast_one_true = true;
-                                    break;
-                                }
-                                False => continue,
-                                Undefined => unreachable!("Because of fn increment"),
-                            },
+                            Identity(var) if values[var.pos()] == False => continue,
+                            Identity(var) if values[var.pos()] == True => {
+                                atleast_one_true = true;
+                                break;
+                            }
 
-                            Not(var) => match values[var.pos()] {
-                                False => {
-                                    flag_atleast_one_true = true;
-                                    break;
-                                }
-                                True => continue,
-                                Undefined => unreachable!("Because of fn increment"),
-                            },
+                            Not(var) if values[var.pos()] == True => continue,
+                            Not(var) if values[var.pos()] == False => {
+                                atleast_one_true = true;
+                                break;
+                            }
 
+                            Identity(_) | Not(_) => unreachable!("All case tested"),
                             And(_) | Or(_) => unreachable!("Not allowed in CNF"),
                         }
                     }
 
-                    if !flag_atleast_one_true {
+                    if !atleast_one_true {
                         return false;
                     }
                 }
 
+                Identity(_) | Not(_) => unreachable!("All case tested"),
                 And(_) => unreachable!("Not allowed in CNF"),
             }
         }

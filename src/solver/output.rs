@@ -28,4 +28,4 @@ impl Solver {
     pub fn search_count(&mut self) -> u64 {
         self.search_count
     }
- }
+}

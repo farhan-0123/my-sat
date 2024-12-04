@@ -19,12 +19,6 @@ impl Var {
     }
 }
 
-impl PartialEq for Var {
-    fn eq(&self, other: &Self) -> bool {
-        self.name == other.name
-    }
-}
-
 #[derive(Debug)]
 pub struct VarDB {
     vars: Vec<Var>,

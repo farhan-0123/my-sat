@@ -24,7 +24,7 @@ impl Solver {
         let mut lexer = DimacsCnf::lexer(source.as_str());
 
         let mut solver: Option<Solver> = None;
-        
+
         use clause::Clause;
         let mut clause: Option<Vec<Clause>> = None;
 
@@ -37,8 +37,10 @@ impl Solver {
                 Some(Ok(token)) if token == Problem => {
                     (solver, clause) = process_problem(&solver, lexer.slice())?;
                 }
-                Some(Ok(token)) if token == Clause => process_clause(&mut solver, &mut clause, lexer.slice())?,
-                
+                Some(Ok(token)) if token == Clause => {
+                    process_clause(&mut solver, &mut clause, lexer.slice())?
+                }
+
                 Some(Err(_)) => panic!("Unexpeted Token, got: {}", lexer.slice()),
 
                 None => break,
@@ -46,16 +48,19 @@ impl Solver {
                 Some(Ok(_)) => unreachable!(),
             }
         }
-        
+
         process_end(&mut solver, clause)?;
-        
+
         Ok(solver.expect("Already checked in process_end"))
     }
 }
 
 const LEXER_CONSTRAINS: &str = "Should not Panic due to lexer constrains";
 
-fn process_problem(solver: &Option<Solver>, slice: &str) -> Result<(Option<Solver>, Option<Vec<Clause>>), Box<dyn Error>> {
+fn process_problem(
+    solver: &Option<Solver>,
+    slice: &str,
+) -> Result<(Option<Solver>, Option<Vec<Clause>>), Box<dyn Error>> {
     if solver.is_some() {
         return Err(Box::new(MySatError::MultipleProblemDefinitions));
     }
@@ -76,12 +81,16 @@ fn process_problem(solver: &Option<Solver>, slice: &str) -> Result<(Option<Solve
 
     // Init & Return Structs
     Ok((
-        Some(Solver::with_capacity(vars, clause)), 
-        Some(Vec::with_capacity(clause))
+        Some(Solver::with_capacity(vars, clause)),
+        Some(Vec::with_capacity(clause)),
     ))
 }
 
-fn process_clause(solver: &mut Option<Solver>, clause: &mut Option<Vec<Clause>>,slice: &str) -> Result<(), Box<dyn Error>> {
+fn process_clause(
+    solver: &mut Option<Solver>,
+    clause: &mut Option<Vec<Clause>>,
+    slice: &str,
+) -> Result<(), Box<dyn Error>> {
     if let (Some(solver), Some(clause)) = (solver, clause) {
         let token = slice.split_whitespace();
         let mut subclause: Vec<Clause> = vec![];
@@ -117,7 +126,7 @@ fn process_end(solver: &mut Option<Solver>, clause: Option<Vec<Clause>>) -> Resu
     if let (Some(solver), Some(clause)) = (solver, clause) {
         use clause::Clause::*;
         solver.set_clause(And(clause))?;
-        
+
         if !solver.is_cnf() {
             return Err(MySatError::IsNotCNF);
         }

@@ -10,9 +10,8 @@ pub fn dpll_cnf_solver(solver: &mut Solver) -> bool {
     let mut index: usize = 0;
 
     loop {
-
         solver.search_count += 1;
-        
+
         match values[index] {
             Undefined => {
                 values[index] = True;
