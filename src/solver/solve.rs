@@ -1,7 +1,7 @@
 use super::*;
 
-// use naive::naive_cnf_solver;
 use dpll::dpll_cnf_solver;
+// use naive::naive_cnf_solver;
 
 impl Solver {
     pub fn solve(&mut self) -> bool {

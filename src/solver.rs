@@ -11,6 +11,9 @@ mod solve;
 pub struct Solver {
     is_locked: bool,
     is_sat: LBool,
+
+    search_count: u64,
+
     vars: VarDB,
     clause: ClauseDB,
 }
@@ -20,6 +23,9 @@ impl Solver {
         Self {
             is_locked: false,
             is_sat: LBool::Undefined,
+
+            search_count: 0,
+
             vars: VarDB::new(),
             clause: ClauseDB::new(),
         }
@@ -29,6 +35,9 @@ impl Solver {
         Self {
             is_locked: false,
             is_sat: LBool::Undefined,
+
+            search_count: 0,
+
             vars: VarDB::with_capacity(vars),
             clause: ClauseDB::with_capacity(clause),
         }

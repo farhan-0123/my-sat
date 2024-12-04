@@ -32,14 +32,8 @@ impl ClauseDB {
         &self.clause
     }
 
-    pub fn add_clause(&mut self, clause: Clause) -> bool {
-        use Clause::*;
-
-        if let And(vec) = &mut self.clause {
-            vec.push(clause);
-        }
-
-        true
+    pub fn set_clause(&mut self, clause: Clause) {
+        self.clause = clause;
     }
 }
 

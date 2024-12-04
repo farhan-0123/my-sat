@@ -2,6 +2,7 @@ use super::*;
 
 use LBool::*;
 
+#[expect(unused)]
 pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
     // Guards
     if !solver.is_cnf() {
@@ -20,6 +21,8 @@ pub fn naive_cnf_solver(solver: &mut Solver) -> bool {
 
     // Implementation
     while increment(values) {
+        solver.search_count += 1;
+        
         if check_satisfiability(clause, values) {
             solver.is_sat = True;
             return true;

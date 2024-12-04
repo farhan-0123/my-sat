@@ -21,12 +21,12 @@ impl Solver {
         Ok(self.vars.get_or_new_vars(range))
     }
 
-    pub fn add_clause(&mut self, clause: Clause) -> Result<&mut Self, MySatError> {
+    pub fn set_clause(&mut self, clause: Clause) -> Result<&mut Self, MySatError> {
         if self.is_locked {
             return Err(MySatError::ChangeAfterLock);
         }
 
-        self.clause.add_clause(clause);
+        self.clause.set_clause(clause);
 
         Ok(self)
     }
