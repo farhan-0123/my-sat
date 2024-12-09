@@ -1,67 +1,25 @@
-use crate::*;
+use crate::Var;
 
 #[derive(Debug)]
 pub enum Clause {
-    Identity(Var),
+    Idn(Var),
     Not(Var),
     Or(Vec<Clause>),
     And(Vec<Clause>),
+    Eql(Vec<Clause>),
+    Xor(Vec<Clause>),
 }
 
-#[derive(Debug)]
-pub struct ClauseDB {
-    clause: Clause,
-}
-
-impl ClauseDB {
-    pub fn new() -> Self {
-        Self {
-            clause: Clause::And(vec![]),
-        }
-    }
-
-    pub fn with_capacity(capacity: usize) -> Self {
-        Self {
-            clause: Clause::And(Vec::with_capacity(capacity)),
-        }
-    }
-}
-
-impl ClauseDB {
-    pub fn get_clause(&self) -> &Clause {
-        &self.clause
-    }
-
-    pub fn set_clause(&mut self, clause: Clause) {
-        self.clause = clause;
-    }
-}
-
-impl ClauseDB {
-    pub fn is_cnf(&self) -> bool {
+impl Clause {
+    pub fn inner_clauses(&mut self) -> Option<&mut Vec<Clause>> {
         use Clause::*;
-
-        if let And(subclauses) = &self.clause {
-            for clause in subclauses {
-                match clause {
-                    Identity(_) | Not(_) => continue,
-
-                    Or(vars) => {
-                        for var in vars {
-                            match var {
-                                Identity(_) | Not(_) => continue,
-                                And(_) | Or(_) => return false,
-                            }
-                        }
-                    }
-
-                    And(_) => return false,
-                }
-            }
-        } else {
-            return false;
+        match self {
+            Not(_) => None,
+            Idn(_) => None,
+            Or(clauses) => Some(clauses),
+            And(clauses) => Some(clauses),
+            Eql(clauses) => Some(clauses),
+            Xor(clauses) => Some(clauses),
         }
-
-        true
     }
 }

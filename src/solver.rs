@@ -1,45 +1,56 @@
-use crate::*;
-
-mod constructor;
-mod dpll;
-mod lexer;
-mod naive;
+mod input;
 mod output;
 mod solve;
 
+use crate::Clause;
+use crate::Portfolio;
+use crate::Var;
+
 #[derive(Debug)]
 pub struct Solver {
-    is_locked: bool,
-    is_sat: LBool,
-
-    search_count: u64,
-
-    vars: VarDB,
-    clause: ClauseDB,
+    portfolio: Portfolio,
+    clause: Clause,
+    vars: Vec<Var>,
+    values: Option<Vec<i64>>,
 }
 
 impl Solver {
     pub fn new() -> Self {
         Self {
-            is_locked: false,
-            is_sat: LBool::Undefined,
-
-            search_count: 0,
-
-            vars: VarDB::new(),
-            clause: ClauseDB::new(),
+            portfolio: Portfolio::BruteForce,
+            clause: Clause::And(vec![]),
+            vars: vec![],
+            values: None,
         }
     }
 
-    pub fn with_capacity(vars: usize, clause: usize) -> Self {
-        Self {
-            is_locked: false,
-            is_sat: LBool::Undefined,
+    pub fn set_portfolio(&mut self, portfolio: Portfolio) {
+        self.portfolio = portfolio
+    }
 
-            search_count: 0,
+    pub fn new_var(&mut self) -> Var {
+        let var = Var::new(self.vars.len());
+        self.vars.push(var);
+        var
+    }
 
-            vars: VarDB::with_capacity(vars),
-            clause: ClauseDB::with_capacity(clause),
+    pub fn new_vars(&mut self, count: usize) -> Vec<Var> {
+        self.vars.reserve(count);
+
+        let mut vec = Vec::with_capacity(count);
+
+        for _ in 0..count {
+            vec.push(self.new_var());
         }
+
+        vec
+    }
+
+    pub fn set_clause(&mut self, clause: Clause) {
+        self.clause = clause
+    }
+
+    pub fn sat_values(&self) -> Option<Vec<i64>> {
+        self.values.clone()
     }
 }

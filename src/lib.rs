@@ -1,17 +1,17 @@
 mod clause;
-mod errors;
+mod error;
 mod lbool;
+mod portfolio;
 mod solver;
 mod var;
 
-pub use solver::Solver;
-
-pub use lbool::LBool;
+use portfolio::ProblemType;
 
 pub use clause::Clause;
-pub use clause::ClauseDB;
-
+pub use lbool::LBool;
+pub use portfolio::Portfolio;
+pub use solver::Solver;
 pub use var::Var;
-pub use var::VarDB;
 
-pub use errors::MySatError;
+pub use error::ParsingError;
+pub use error::SolverError;
