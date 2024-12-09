@@ -25,7 +25,7 @@ enum CNF {
     StmtEnd,
 }
 
-// Entry cnf 
+// Entry cnf
 pub fn open_dimacs_cnf(path: PathBuf) -> Result<Solver, Box<dyn Error>> {
     let source = fs::read_to_string(path)?;
     let mut lexer = CNF::lexer(source.as_str());
